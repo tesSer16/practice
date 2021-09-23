@@ -16,8 +16,8 @@ def check(a, b, c):
 
 w = [[[0] * 21 for _ in range(21)] for _ in range(21)]
 while True:
-    a, b, c = map(int, input().split())
-    if a == b == c == -1:
+    A, B, C = map(int, input().split())
+    if A == B == C == -1:
         break
     
-    print("w(%d, %d, %d) = " % (a, b, c), check(a, b, c))
+    print("w(%d, %d, %d) = " % (A, B, C), check(A, B, C))
