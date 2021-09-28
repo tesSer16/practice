@@ -38,3 +38,5 @@ target = [r, c]
 z = (2, 1)
 matrixBS((0, 0), (2 ** N - 1, 2 ** N - 1))
 print(answer)
+
+# 나중을 위해
