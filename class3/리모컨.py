@@ -1,10 +1,9 @@
 N = int(input())
 M = int(input())
 
-button = [str(i) for i in range(10)]
+button = {str(i) for i in range(10)}
 if M > 0:
-    broken = list(map(str, input().split()))
-    button = list(filter(lambda x: x not in broken, button))
+    button -= set(map(str, input().split()))
 
 current_ch = 100
 m = abs(current_ch - N)
