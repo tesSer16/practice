@@ -1,13 +1,13 @@
+def solve(num, cnt):
+    global result
+    for a in range(int(num**0.5), int((num//(4 - cnt + 1))**0.5), -1):
+        if num == a*a:
+            result = min(cnt, result)
+        else:
+            solve(num - a*a, cnt + 1)
+
+
 n = int(input())
-
-
-def solve():
-    for a in range(255):
-        for b in range(255):
-            for c in range(255):
-                for d in range(255):
-                    if n == a**2 + b**2 + c**2 + d**2:
-                        return a, b, c, d
-
-
-print(solve())
+result = 4
+solve(n, 1)
+print(result)
