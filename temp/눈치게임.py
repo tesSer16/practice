@@ -5,8 +5,11 @@ def is_prime(num):
     return True
 
 
-N = 439
+N = 449
 result = []
-for i in range(2, N):
+for i in range(2, N + 1):
     if is_prime(i):
         result.append(i)
+
+print(result)
+print(len(result))
