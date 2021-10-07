@@ -1,8 +1,8 @@
 import sys
-sys.setrecursionlimit(10**5)
+from collections import deque
 
 
-def day(riped):
+def day():
     def ripe(a, b, c):
         if a < 0 or b < 0 or c < 0 or a >= H or b >= N or c >= M:
             return
@@ -10,15 +10,12 @@ def day(riped):
             return
 
         tomatoes[a][b][c] = 1
-        temp.append((a, b, c))
+        ripe_tomatoes.append((a, b, c))
 
-    temp = []
-    for _ in range(len(riped)):
-        cur_tomato = riped.pop()
+    for _ in range(len(ripe_tomatoes)):
+        cur_tomato = ripe_tomatoes.popleft()
         for s in states:
-            ripe(*map(lambda x: x[0] + x[1], zip(cur_tomato, s)))
-
-    riped += temp
+            ripe(*map(sum, zip(cur_tomato, s)))
 
 
 def last_check():
@@ -31,18 +28,21 @@ def last_check():
 
 
 M, N, H = map(int, input().split())
-tomatoes = [[list(map(int, sys.stdin.readline().split())) for _ in range(N)] for _ in range(H)]
-ripe_tomatoes = []
+ripe_tomatoes = deque()
+tomatoes = []
 for i in range(H):
+    temp = []
     for j in range(N):
+        temp.append(list(map(int, sys.stdin.readline().split())))
         for k in range(M):
-            if tomatoes[i][j][k] == 1:
+            if temp[j][k] == 1:
                 ripe_tomatoes.append((i, j, k))
+    tomatoes.append(temp)
 
 states = ((1, 0, 0), (0, 1, 0), (0, 0, 1), (-1, 0, 0), (0, -1, 0), (0, 0, -1))
 cnt = 0
 while ripe_tomatoes:
-    day(ripe_tomatoes)
+    day()
     cnt += 1
 
 if last_check():
