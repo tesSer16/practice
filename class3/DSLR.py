@@ -9,27 +9,29 @@ def bfs(a, b):
         if n == b:
             return
 
-        for k, v in commands.items():
-            value = v(n)
+        for di in range(4):
+            value = commands[di](n)
             if visited[value] == 0:
                 q.append(value)
-                visited[value] = (n, k)
+                visited[value] = (n, di)
 
 
-commands = {'D': lambda x: (2 * x) % 10000,
-            'S': lambda x: (x - 1) % 10000,
-            'L': lambda x: (x % 1000) * 10 + x // 1000,
-            'R': lambda x: (x % 10) * 1000 + x // 10}
+commands = [lambda x: (2 * x) % 10000,
+            lambda x: (x - 1) % 10000,
+            lambda x: (x % 1000) * 10 + x // 1000,
+            lambda x: (x % 10) * 1000 + x // 10]
+
 for _ in range(int(input())):
     visited = [0] * 10001
     A, B = map(int, sys.stdin.readline().split())
-    visited[A] = (0, '')
     bfs(A, B)
     answer = []
+    cnt = 0
     while B != A:
         answer.append(visited[B][1])
         B = visited[B][0]
+        cnt += 1
 
-    for _ in range(len(answer)):
-        print(answer.pop(), end="")
+    for _ in range(cnt):
+        print("DSLR"[answer.pop()], end="")
     print()
