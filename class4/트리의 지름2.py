@@ -2,14 +2,13 @@ import sys
 sys.setrecursionlimit(100001)
 
 
-def dfs(v, tot_dist):
-    visited[v] = 1
+def dfs(v, tot_dist, last_v):
     if tot_dist > ans[0]:
         ans[0] = tot_dist
         ans[1] = v
 
     for w, dist in data_list[v]:
-        if not visited[w]:
+        if w != last_v:
             dfs(w, tot_dist + dist, v)
 
 
@@ -21,9 +20,7 @@ for _ in range(V):
     for i in range(0, len(data), 2):
         data_list[node].append([data[i], data[i + 1]])
 
-visited = [0 for _ in range(V + 1)]
 dfs(1, 0, 0)
-visited = [0 for _ in range(V + 1)]
 dfs(ans[1], 0, 0)
 
 print(ans[0])
