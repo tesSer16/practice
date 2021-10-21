@@ -1,4 +1,5 @@
 import sys
+from collections import deque
 
 N, M = map(int, input().split())
 color = [''] + [1] * N
@@ -8,8 +9,17 @@ for _ in range(M):
     connected[v].append(w)
     connected[w].append(v)
 
-for v in range(1, N + 1):
-    for w in connected[v]:
+visited = [0] * (N + 1)
+q = deque([1])
+while q:
+    v = q.popleft()
+    adj_nodes = sorted(connected[v])
+    for w in adj_nodes:
+        if not visited[w]:
+            q.append(w)
+            visited[w] = 1
+
+    for w in adj_nodes[::-1]:
         if color[v] == color[w]:
             color[w] += 1
 
