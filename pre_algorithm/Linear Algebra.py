@@ -84,7 +84,7 @@ class Matrix:
                 for k in range(self.columns):
                     result[i][j] += self.matrix[i][k] * self.matrix[k][j]
 
-        return result
+        return Matrix(result)
 
 
 if __name__ == "__main__":
