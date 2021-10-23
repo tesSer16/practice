@@ -1,13 +1,17 @@
 from collections import deque
 
 N, K = map(int, input().split())
-
-q = deque([(N, 0)])
+MAX = 100001
+visited = [MAX] * MAX
+visited[N] = 0
+q = deque([N])
 while q:
-    current, time = q.popleft()
+    current = q.popleft()
     if current == K:
-        print(time)
+        print(visited[K])
         break
-    for i, move in enumerate([current * 2, current - 1, current + 1]):
-        if 0 <= move <= K:
-            q.append((move, time + 1 if i else time))
+    for i, next_x in enumerate([current * 2, current - 1, current + 1]):
+        next_time = visited[current] + 1 if i else visited[current]
+        if 0 <= next_x < MAX and next_time < visited[next_x]:
+            visited[next_x] = next_time
+            q.append(next_x)
