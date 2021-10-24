@@ -16,8 +16,6 @@ def divide(in_i, in_f, post_i, post_f):
 n = int(input())
 inorder = list(map(int, input().split()))
 postorder = list(map(int, input().split()))
-pos = [0] * (n + 1)
-for i in range(n):
-    pos[inorder[i]] = i
+pos = {inorder[i]: i for i in range(n)}
 
 divide(0, n - 1, 0, n - 1)
