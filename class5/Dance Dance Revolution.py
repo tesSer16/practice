@@ -1,13 +1,32 @@
-num_list, dum = input().split()
+*num_list, dum = map(int, input().split())
 N = len(num_list)
-dp = [[0] * 10 for _ in range(N)]  # 12 13 14 23 24 34 10 20 30 40
-order = {1: (0, 2, 1, 2, 0, 1, 0, 1, 2),
-         2: (0, 3, 3, 0, 4, 5, 0, 4, 5),
-         3: (3, 5, 1, 2, 5, 3, 1, 3, 5),
-         4: (2, 5, 4, 5, 2, 4, 2, 4, 5)}
+INF = float('inf')
+state = [12, 13, 14, 23, 24, 34, 10, 20, 30, 40]
+dp = [{k: INF for k in state} for _ in range(N)]
 
-factor = [4, 4, 3, 3, 3, 3, 1, 1, 1]
-dp[0][num_list[0] + 5] = 2
+dp[0][num_list[0] * 10] = 2
 
 for i in range(1, N):
+    num = num_list[i]
+    for k, v in dp[i - 1].items():
+        if v >= float('inf'):
+            continue
 
+        a, b = k // 10, k % 10
+        if a == num or b == num:
+            dp[i][k] = min(dp[i][k], v + 1)
+        elif b == 0:
+            add = 3 if (a + num) % 2 else 4
+            dp[i][num * 10] = min(dp[i][num * 10], v + add)
+            key = 10 * min(a, num) + max(a, num)
+            dp[i][key] = min(dp[i][key], v + 2)
+        else:
+            add = 3 if (a + num) % 2 else 4
+            key = 10 * min(b, num) + max(b, num)
+            dp[i][key] = min(dp[i][key], v + add)
+
+            add = 3 if (b + num) % 2 else 4
+            key = 10 * min(a, num) + max(a, num)
+            dp[i][key] = min(dp[i][key], v + add)
+
+print(min(dp[-1].values()))
