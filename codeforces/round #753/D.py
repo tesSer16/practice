@@ -1,42 +1,35 @@
 import sys
 read = sys.stdin.readline
 
-
-def dfs(d):
-    if result[0]:
-        return
-    if d == n + 1:
-        result[0] = True
-        return
-    for j in range(n):
-        if check[d][j] and not visited[j]:
-            visited[j] = 1
-            dfs(d + 1)
-            visited[j] = 0
-
-
 for _ in range(int(input())):
     n = int(read())
     nums = list(map(int, read().split()))
     commands = read().strip()
-    check = [[0] * n for _ in range(n + 1)]
-    for i in range(n):
-        if commands[i] == 'R':
-            bound = nums[i] if nums[i] > 0 else 1
-            for nu in range(bound, n + 1):
-                check[nu][i] = 1
-        else:
-            if nums[i] <= 0:
-                continue
-            else:
-                bound = nums[i] + 1 if nums[i] < n else n + 1
-                for nu in range(1, bound):
-                    check[nu][i] = 1
+    sorted_data = sorted([(k, v) for k, v in zip(nums, commands)], key=lambda x: (x[1], x[0]))
 
-    visited = [0] * n
-    result = [False]
-    dfs(1)
-    if result[0]:
+    check = [0] * n
+    i = n - 1
+    while sorted_data[i][1] != 'B':
+        num = sorted_data[i][0]
+        bound = num if num > 0 else 1
+        for nu in range(n, bound - 1, -1):
+            if not check[nu - 1]:
+                check[nu - 1] = 1
+                break
+
+        i -= 1
+        if i == -1:
+            break
+
+    for j in range(i + 1):
+        num = sorted_data[j][0]
+        bound = num + 1 if num < n else n + 1
+        for nu in range(1, bound):
+            if not check[nu - 1]:
+                check[nu - 1] = 1
+                break
+
+    if all(check):
         print("YES")
     else:
         print("NO")
