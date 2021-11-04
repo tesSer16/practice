@@ -1,18 +1,19 @@
-def partial_sum():
-    for i in range(N):
-        for j in range(N - i):
-            if i == 0:
-                value = num_list[i]
-            else:
-                value = matrix[i - 1][j] + matrix[i][j - 1]
-            if value >= S:
-                return i + 1
-            matrix[i][j] = value
-
-    return 0
-
-
 N, S = map(int, input().split())
 num_list = list(map(int, input().split()))
-matrix = [[0] * N for _ in range(N)]
-print(partial_sum())
+prefix_sum = [0] * (N + 1)
+for k in range(1, N + 1):
+    prefix_sum[k] += prefix_sum[k - 1] + num_list[k - 1]
+
+length = 1000001
+left, right = 0, 1
+while left < N:
+    if prefix_sum[right] - prefix_sum[left] >= S:
+        length = min(length, right - left)
+        left += 1
+    else:
+        if right < N:
+            right += 1
+        else:
+            left += 1
+
+print(length if length < 1000001 else 0)
