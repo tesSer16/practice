@@ -9,42 +9,24 @@ class Shark:
         self.dir = dir
 
     def move(self, v):
-        if self.dir == 1:
-            if v < self.row:
-                self.row -= v
-            else:
-                temp, self.row = self.row, 0
-                self.dir = 2
-                self.move(v - temp)
-
-        elif self.dir == 2:
-            if v < (R - 1 - self.row):
-                self.row += v
-            else:
-                temp, self.row = self.row, R - 1
-                self.dir = 1
-                self.move(v - (R - 1 - temp))
-
-        elif self.dir == 4:
-            if v < self.col:
-                self.col -= v
-            else:
-                temp, self.col = self.col, 0
-                self.dir = 3
-                self.move(v - temp)
-
-        elif self.dir == 3:
-            if v < (C - 1 - self.col):
-                self.col += v
-            else:
-                temp, self.col = self.col, C - 1
-                self.dir = 4
-                self.move(v - (C - 1 - temp))
+        data = {1: [(-1, 0), 0, 2], 2: [(1, 0), R - 1, 1],
+                3: [(0, 1), C - 1, 4], 4: [(0, -1), 0, 3]}
+        rc, bound, next_dir = data[self.dir]
+        rest = bound - (self.row * rc[0] + self.col * rc[1])
+        if v < rest:
+            self.row += rc[0] * v
+            self.col += rc[1] * v
+        else:
+            self.row = bound if rc[0] else self.row
+            self.col = bound if rc[1] else self.col
+            self.dir = next_dir
+            self.move(v - rest)
 
 
 R, C, M = map(int, input().split())
 sharks = {}
 board = [[0] * C for _ in range(R)]
+a = Shark(3, 0, 3, 3)
 
 for _ in range(M):
     r, c, s, d, z = map(int, input().split())
