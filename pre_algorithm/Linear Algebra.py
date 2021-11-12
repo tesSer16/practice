@@ -88,8 +88,26 @@ class Matrix:
 
 
 if __name__ == "__main__":
-    A = Matrix([[5, 8, -4],
-                [6, 9, -5],
-                [4, 7, -2]])
-    inv_A = A.inverse()
-    print(*inv_A.matrix, sep='\n')
+    def dfs(d, _list):
+        if d == 9:
+            B = Matrix([_list[:3], _list[3:6], _list[6:]])
+            if (B * B).matrix == [[0] * 3 for _ in range(3)]:
+                print(*B.matrix, sep='\n')
+                print((eye3 + B).det())
+            return
+
+        for i in range(-10, 11):
+            if not toggle[d] and i < checked[d]:
+                i += 1
+                if i == checked[d]:
+                    toggle[d] = 1
+                continue
+            dfs(d + 1, _list + [i])
+
+    def trans(_list):
+        return sum((num + 10) * 21 ** (8 - i) for i, num in enumerate(_list))
+
+    checked = [-10, -8, -6, 5, 4, 3, 10, 8, 7]
+    toggle = [0] * 9
+    eye3 = Matrix.eye(3)
+    dfs(0, [])
