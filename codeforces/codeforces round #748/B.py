@@ -1,18 +1,23 @@
-from collections import deque
 import sys
 
 for _ in range(int(input())):
-    n = int(sys.stdin.readline())
+    n = sys.stdin.readline().strip()
+    answer = float('inf')
+    for s in ['00', '25', '50', '75']:
+        sub_answer = 0
+        ptr = len(n) - 1
+        while ptr >= 0 and n[ptr] != s[1]:
+            sub_answer += 1
+            ptr -= 1
 
-    q = deque([[n, 0]])
-    while q:
-        num, cnt = q.popleft()
-        if num % 25 == 0:
-            print(cnt)
-            break
+        if ptr >= 0:
+            ptr -= 1
 
-        str_num = str(num)
-        if len(str_num) == 1:
-            continue
-        for i in range(len(str_num)):
-            q.append([int(str_num[:i] + str_num[i + 1:]), cnt + 1])
+        while ptr >= 0 and n[ptr] != s[0]:
+            sub_answer += 1
+            ptr -= 1
+
+        if ptr >= 0 and answer > sub_answer:
+            answer = sub_answer
+
+    print(answer)
