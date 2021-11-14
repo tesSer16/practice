@@ -5,7 +5,7 @@ for _ in range(int(read())):
     n = int(read())
     a, b = sorted(list(map(int, read().split()))), sorted(list(map(int, read().split())))
     for i in range(n):
-        if a[i] + 1 < b[i]:
+        if a[i] + 1 < b[i] or b[i] < a[i]:
             print("NO")
             break
     else:
