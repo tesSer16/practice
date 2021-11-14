@@ -17,12 +17,12 @@ for i in range(1, n):
         bt[i] = bisect.bisect_left(seq, arr[i][1])
         seq[bt[i]] = arr[i][1]
 
-max_idx, ans = max(bt) + 1, []
+max_idx, ans = idx + 1, []
 for i in range(n - 1, -1, -1):
     if bt[i] == max_idx - 1:
         max_idx = bt[i]
     else:
         ans.append(arr[i][0])
 
-print(len(ans))
+print(n - idx - 1)
 print(*ans[::-1], sep='\n')
