@@ -1,36 +1,40 @@
-def move(d):
+def move(d, board):
     new_board = [[0] * N for _ in range(N)]
-    if d == 0:
-        for j in range(N):
-            stack = []
-            for i in range(N):
-                if not board[i][j]:
-                    continue
-                if stack and stack[-1] == [board[i][j]]:
-                    stack[-1].append(board[i][j])
-                else:
-                    stack.append([board[i][j]])
+    data = [(1, 0, 0, 1, 1, 0, 0), (-1, 1, 0, 0, 0, 1, 0),
+            (-1, 0, 1, 0, 1, 0, 0), (1, 1, 0, 0, 0, 0, 1)][d]
+
+    for a in range(N):
+        stack = []
+        for b in range(N)[::data[0]]:
+            r = a * data[1] + b * (data[1] ^ 1)
+            c = b * data[1] + a * (data[1] ^ 1)
+            if not board[r][c]:
+                continue
+            if stack and stack[-1] == [board[r][c]]:
+                stack[-1].append(board[r][c])
+            else:
+                stack.append([board[r][c]])
 
             for k in range(len(stack)):
-                new_board[k][j] = sum(stack[k])
-
-    elif d == 1:
-        for i in range(N):
-            stack = []
-            for j in range(N - 1, -1, -1):
-                if not board[i][j]:
-                    continue
-                if stack and stack[-1] == [board[i][j]]:
-                    stack[-1].append(board[i][j])
-                else:
-                    stack.append([board[i][j]])
-
-            for k in range(len(stack)):
-                new_board[i][N - 1 - k] = sum(stack[k])
+                x = r * data[1] + (N - 1 - k) * data[2] + k * data[3]
+                y = c * data[4] + (N - 1 - k) * data[5] + k * data[6]
+                new_board[x][y] = sum(stack[k])
 
     return new_board
 
 
+def dfs(d, current):
+    if d == 5:
+        mb = max(max(c) for c in current)
+        result[0] = max(result[0], mb)
+        return
+
+    for i in range(4):
+        dfs(d + 1, move(i, current))
+
+
 N = int(input())
-board = [list(map(int, input().split())) for _ in range(N)]
-print(*move(1), sep='\n')
+origin = [list(map(int, input().split())) for _ in range(N)]
+result = [0]
+dfs(0, origin)
+print(result[0])
