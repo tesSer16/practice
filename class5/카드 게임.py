@@ -7,31 +7,14 @@ def find(x):
     return parent[x]
 
 
-def union(x, y):
-    x_root = find(x)
-    y_root = find(y)
-
-    if x_root == y_root:
-        return
-
-    if rank[x_root] < rank[y_root]:
-        parent[y_root] = x_root
-    else:
-        parent[x_root] = y_root
-        if rank[x_root] == rank[y_root]:
-            rank[y_root] += 1
-
-
 N, M, K = map(int, input().split())
-rank = [0] * N
-parent = [0] * N
+parent = list(range(M))
 card_pool = sorted(list(map(int, input().split())))
-battle = list(map(int, input().split()))
 
-for b in battle:
+for b in list(map(int, input().split())):
     v = bisect.bisect_right(card_pool, b)
-    print(find(v))
-    if v < M - 1:
-        union(v, v + 1)
-    else:
-        union(v, v - 1)
+    w = find(v)
+    print(card_pool[w])
+
+    if w < M - 1:
+        parent[find(w)] = find(w + 1)
