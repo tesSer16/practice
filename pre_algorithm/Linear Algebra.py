@@ -8,6 +8,25 @@ class Matrix:
     def eye(n):
         return Matrix([[1 if i == j else 0 for j in range(n)] for i in range(n)])
 
+    def transpose(self):
+        result = Matrix([[0] * self.rows for _ in range(self.columns)])
+        for i in range(self.rows):
+            for j in range(self.columns):
+                result.matrix[j][i] = self.matrix[i][j]
+
+        return result
+
+    def conjugate(self):
+        result = Matrix(self.matrix)
+        for i in range(self.rows):
+            for j in range(self.columns):
+                result.matrix[j][i] = self.matrix[i][j].conjugate()
+
+        return result
+
+    def adjoint(self):
+        return self.transpose().conjugate()
+
     def det(self):
         if self.rows == 1:
             return self.matrix[0][0]
@@ -68,6 +87,9 @@ class Matrix:
 
         return inv
 
+    def trace(self):
+        return sum(self.matrix[i][i] for i in range(self.rows))
+
     def __add__(self, other):
         # return Matrix([[self.matrix[i][j] + other.matrix[i][j] for j in range(self.columns)] for i in range(self.rows)])
         result = [[0] * self.columns for _ in range(self.rows)]
@@ -86,28 +108,64 @@ class Matrix:
 
         return Matrix(result)
 
+    def __str__(self):
+        print(*self.matrix, sep='\n')
+        return ""
+
+
+class VectorSpace:
+    def __init__(self, dim, inner_product):
+        self.dim = dim
+        self.inner_product = inner_product
+
+    def gram_schmidt(self, vectors):
+        result = vectors[::]
+        for i in range(1, len(vectors)):
+            for j in range(i):
+                result[i] -= result[j].mul(round(self.inner_product(vectors[i], result[j]) / result[j].norm()**2, 9))
+
+        return result
+
+
+class Vector:
+    def __init__(self, vector, vector_space):
+        self.vector = vector
+        self.entries = len(vector)
+        self.VS = vector_space
+
+    def conjugate(self):
+        result = Vector(self.vector, self.VS)
+        for i in range(self.entries):
+            result.vector[i] = self.vector[i].conjugate()
+
+        return result
+
+    def mul(self, k):
+        return Vector([k * self.vector[i] for i in range(self.entries)], self.VS)
+
+    def norm(self):
+        return self.VS.inner_product(self, self) ** 0.5
+
+    def __mul__(self, other):
+        result = 0
+        for i in range(self.entries):
+            result += self.vector[i] * other.vector[i]
+
+        return result
+
+    def __add__(self, other):
+        return Vector([self.vector[i] + other.vector[i] for i in range(self.entries)], self.VS)
+
+    def __sub__(self, other):
+        return Vector([self.vector[i] - other.vector[i] for i in range(self.entries)], self.VS)
+
+    def __str__(self):
+        return '(' + ', '.join(map(str, self.vector)) + ')'
+
 
 if __name__ == "__main__":
-    def dfs(d, _list):
-        if d == 9:
-            B = Matrix([_list[:3], _list[3:6], _list[6:]])
-            if (B * B).matrix == [[0] * 3 for _ in range(3)]:
-                print(*B.matrix, sep='\n')
-                print((eye3 + B).det())
-            return
-
-        for i in range(-10, 11):
-            if not toggle[d] and i < checked[d]:
-                i += 1
-                if i == checked[d]:
-                    toggle[d] = 1
-                continue
-            dfs(d + 1, _list + [i])
-
-    def trans(_list):
-        return sum((num + 10) * 21 ** (8 - i) for i, num in enumerate(_list))
-
-    checked = [-10, -8, -6, 5, 4, 3, 10, 8, 7]
-    toggle = [0] * 9
-    eye3 = Matrix.eye(3)
-    dfs(0, [])
+    V = VectorSpace(4, lambda x, y: y.conjugate() * x)
+    w1 = Vector([1, -2, -1, 3], V)
+    w2 = Vector([3, 6, 3, -1], V)
+    w3 = Vector([1, 4, 2, 8], V)
+    print(*V.gram_schmidt([w1, w2, w3]))
