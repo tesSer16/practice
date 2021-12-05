@@ -120,7 +120,7 @@ class VectorSpace:
 
     def gram_schmidt(self, vectors):
         result = vectors[::]
-        for i in range(1, len(vectors)):
+        for i in range(len(vectors)):
             for j in range(i):
                 result[i] -= result[j].mul(round(self.inner_product(vectors[i], result[j]) / result[j].norm()**2, 9))
 
