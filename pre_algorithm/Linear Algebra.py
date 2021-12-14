@@ -181,6 +181,14 @@ class Vector:
         return '(' + ', '.join(map(str, self.vector)) + ')'
 
 
+class Polynomial:
+    pass
+
+
+class Scalar:
+    pass
+
+
 if __name__ == "__main__":
     # V = VectorSpace(4, lambda x, y: y.conjugate() * x)
     # w1 = Vector([1, -2, -1, 3], V)
