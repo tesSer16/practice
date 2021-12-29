@@ -8,6 +8,9 @@ class Matrix:
     def eye(n):
         return Matrix([[1 if i == j else 0 for j in range(n)] for i in range(n)])
 
+    def copy(self):
+        return [[self.matrix[i][j] for j in range(self.columns)] for i in range(self.rows)]
+
     def transpose(self):
         result = Matrix([[0] * self.rows for _ in range(self.columns)])
         for i in range(self.rows):
@@ -17,17 +20,17 @@ class Matrix:
         return result
 
     def conjugate(self):
-        result = Matrix(self.matrix)
+        result = Matrix(self.copy())
         for i in range(self.rows):
             for j in range(self.columns):
-                result.matrix[j][i] = self.matrix[i][j].conjugate()
+                result.matrix[i][j] = self.matrix[i][j].conjugate()
 
         return result
 
     def adjoint(self):
         return self.transpose().conjugate()
 
-    def det(self):
+    def det(self):  # 개선 필요
         if self.rows == 1:
             return self.matrix[0][0]
 
@@ -54,12 +57,20 @@ class Matrix:
             for j in range(self.columns):
                 self.matrix[i][j] *= k
 
+    def mul(self, k):
+        result = Matrix(self.copy())
+        for i in range(self.rows):
+            for j in range(self.columns):
+                result.matrix[i][j] *= k
+
+        return result
+
     def scalar_row(self, row, k):
         for j in range(self.columns):
             self.matrix[row][j] *= k
 
     def inverse(self):
-        origin = Matrix(self.matrix)
+        origin = Matrix(self.copy())
         inv = Matrix.eye(self.rows)
         for j in range(self.columns):
             for i in range(j, self.columns):
@@ -91,11 +102,18 @@ class Matrix:
         return sum(self.matrix[i][i] for i in range(self.rows))
 
     def __add__(self, other):
-        # return Matrix([[self.matrix[i][j] + other.matrix[i][j] for j in range(self.columns)] for i in range(self.rows)])
         result = [[0] * self.columns for _ in range(self.rows)]
         for i in range(self.rows):
             for j in range(self.columns):
                 result[i][j] = self.matrix[i][j] + other.matrix[i][j]
+
+        return Matrix(result)
+
+    def __sub__(self, other):
+        result = [[0] * self.columns for _ in range(self.rows)]
+        for i in range(self.rows):
+            for j in range(self.columns):
+                result[i][j] = self.matrix[i][j] - other.matrix[i][j]
 
         return Matrix(result)
 
@@ -104,7 +122,7 @@ class Matrix:
         for i in range(self.rows):
             for j in range(other.columns):
                 for k in range(self.columns):
-                    result[i][j] += self.matrix[i][k] * self.matrix[k][j]
+                    result[i][j] += self.matrix[i][k] * other.matrix[k][j]
 
         return Matrix(result)
 
@@ -118,11 +136,14 @@ class VectorSpace:
         self.dim = dim
         self.inner_product = inner_product
 
-    def gram_schmidt(self, vectors):
-        result = vectors[::]
-        for i in range(len(vectors)):
+    def norm(self, vector):
+        return self.inner_product(vector, vector) ** 0.5
+
+    def gram_schmidt(self, *vectors):
+        result = list(vectors)[::]
+        for i in range(1, len(vectors)):
             for j in range(i):
-                result[i] -= result[j].mul(round(self.inner_product(vectors[i], result[j]) / result[j].norm()**2, 9))
+                result[i] -= result[j].mul(round(self.inner_product(vectors[i], result[j]) / self.norm(result[j])**2, 9))
 
         return result
 
@@ -143,9 +164,6 @@ class Vector:
     def mul(self, k):
         return Vector([k * self.vector[i] for i in range(self.entries)], self.VS)
 
-    def norm(self):
-        return self.VS.inner_product(self, self) ** 0.5
-
     def __mul__(self, other):
         result = 0
         for i in range(self.entries):
@@ -163,9 +181,21 @@ class Vector:
         return '(' + ', '.join(map(str, self.vector)) + ')'
 
 
+class Polynomial:
+    pass
+
+
+class Scalar:
+    pass
+
+
 if __name__ == "__main__":
-    V = VectorSpace(4, lambda x, y: y.conjugate() * x)
-    w1 = Vector([1, -2, -1, 3], V)
-    w2 = Vector([3, 6, 3, -1], V)
-    w3 = Vector([1, 4, 2, 8], V)
-    print(*V.gram_schmidt([w1, w2, w3]))
+    # V = VectorSpace(4, lambda x, y: y.conjugate() * x)
+    # w1 = Vector([1, -2, -1, 3], V)
+    # w2 = Vector([3, 6, 3, -1], V)
+    # w3 = Vector([1, 4, 2, 8], V)
+    V = VectorSpace(4, lambda A, B: (B.adjoint() * A).trace())
+    w1 = Matrix([[3, 5], [-1, 1]])
+    w2 = Matrix([[-1, 9], [5, -1]])
+    w3 = Matrix([[7, -17], [2, -6]])
+    print(*V.gram_schmidt(w1, w2, w3), sep='\n')
