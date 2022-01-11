@@ -7,7 +7,7 @@ for _ in range(N):
     s, l, o = map(int, read().split())
     B.append((l, s)) if o else A.append((l, s))
 
-start, end = 0, 2 * 10 ** 9
+start, end = 0, 2 * 10 ** 9 + 1
 while start + 1 < end:
     mid = (start + end) // 2
     germ = sum([s * max(1, mid - l) for l, s in A])
