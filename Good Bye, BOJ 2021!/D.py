@@ -12,7 +12,7 @@ def dijkstra(start):
         if d[current] < distance:
             continue
         for node, dist in data[current]:
-            next_distance = distance + dist
+            next_distance = dist - ((dist - distance) // M) * M + 1
             if next_distance < d[node]:
                 d[node] = next_distance
                 heapq.heappush(heap, (next_distance, node))
@@ -21,11 +21,11 @@ def dijkstra(start):
 
 
 N, M = map(int, read().split())
-INF = float('inf')
+INF = 1000000000000000000
 data = [[] for _ in range(N + 1)]
 for i in range(M):
     v1, v2 = map(int, read().split())
-    data[v1].append([v2, i + 1])
-    data[v2].append([v1, i + 1])
+    data[v1].append([v2, i])
+    data[v2].append([v1, i])
 
 print(dijkstra(1)[N])
