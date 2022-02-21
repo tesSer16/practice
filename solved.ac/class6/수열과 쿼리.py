@@ -78,3 +78,5 @@ for _ in range(int(read())):
         _min = [10 ** 9 + 1, -1]
         find(0, N - 1, 1, b - 1, c - 1)
         print(_min[1] + 1)
+
+# 37898381 특이
