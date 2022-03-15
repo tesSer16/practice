@@ -1,3 +1,5 @@
+import bisect
+
 _list = []
 text = ""
 for _ in range(int(input())):
@@ -7,10 +9,9 @@ for _ in range(int(input())):
 
     else:
         target = int(t) - int(c)
-        for i in range(len(_list) - 1, -1, -1):
-            if target > _list[i][0]:
-                text = _list[i][1]
-                break
+        idx = bisect.bisect_left(_list, (target, ''))
+        if idx:
+            text = _list[idx - 1][1]
         else:
             text = ""
 
