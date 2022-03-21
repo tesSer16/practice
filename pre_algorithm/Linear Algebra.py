@@ -143,7 +143,9 @@ class VectorSpace:
         result = list(vectors)[::]
         for i in range(1, len(vectors)):
             for j in range(i):
-                result[i] -= result[j].mul(round(self.inner_product(vectors[i], result[j]) / self.norm(result[j])**2, 9))
+                result[i] -= result[j].mul(
+                    round(self.inner_product(vectors[i], result[j]) / self.norm(result[j])**2, 9)
+                )
 
         return result
 
@@ -182,20 +184,46 @@ class Vector:
 
 
 class Polynomial:
-    pass
+    def __init__(self, *coeffs):
+        self.coeffs = coeffs
 
+    def __str__(self):
+        ans = []
+        for i in range(len(self.coeffs) - 1, -1, -1):
+            coeff = self.coeffs[i]
+            if not coeff:
+                continue
 
-class Scalar:
-    pass
+            if i == 1:
+                ans.append(f"{coeff}x" if coeff > 1 else "x")
+            elif i == 0:
+                ans.append(str(coeff))
+            else:
+                ans.append(f"{coeff}x^{i}" if coeff > 1 else f"x^{i}")
+
+        return ' + '.join(ans)
+
+    def __call__(self, x):
+        value = 0
+        for i in range(len(self.coeffs)):
+            value += self.coeffs[i] * x ** i
+
+        return value
+
+    # +, * 연산 구현
+    # 해 구하기
 
 
 if __name__ == "__main__":
-    # V = VectorSpace(4, lambda x, y: y.conjugate() * x)
-    # w1 = Vector([1, -2, -1, 3], V)
-    # w2 = Vector([3, 6, 3, -1], V)
-    # w3 = Vector([1, 4, 2, 8], V)
-    V = VectorSpace(4, lambda A, B: (B.adjoint() * A).trace())
-    w1 = Matrix([[3, 5], [-1, 1]])
-    w2 = Matrix([[-1, 9], [5, -1]])
-    w3 = Matrix([[7, -17], [2, -6]])
-    print(*V.gram_schmidt(w1, w2, w3), sep='\n')
+    V = VectorSpace(4, lambda x, y: y.conjugate() * x)
+    w1 = Vector([1, -2, -1, 3], V)
+    w2 = Vector([3, 6, 3, -1], V)
+    w3 = Vector([1, 4, 2, 8], V)
+    # V = VectorSpace(4, lambda A, B: (B.adjoint() * A).trace())
+    # w1 = Matrix([[2, 2], [2, 1]])
+    # w2 = Matrix([[11, 4], [2, 5]])
+    # w3 = Matrix([[4, -12], [3, -16]])
+    # print(*V.gram_schmidt(w1, w2, w3), sep='\n')
+    f1 = Polynomial(1, 2, 1)
+    print(f1)
+    print(f1(3))
