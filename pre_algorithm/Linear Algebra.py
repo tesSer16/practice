@@ -101,6 +101,10 @@ class Matrix:
     def trace(self):
         return sum(self.matrix[i][i] for i in range(self.rows))
 
+    # use old determinant!
+    def char_poly(self):
+        pass
+
     def __add__(self, other):
         result = [[0] * self.columns for _ in range(self.rows)]
         for i in range(self.rows):
@@ -186,8 +190,12 @@ class Vector:
 class Polynomial:
     def __init__(self, *coeffs):
         self.coeffs = coeffs
+        self.degree = len(coeffs)
 
     def __str__(self):
+        if not self.coeffs:
+            return 0
+
         ans = []
         for i in range(len(self.coeffs) - 1, -1, -1):
             coeff = self.coeffs[i]
@@ -211,6 +219,27 @@ class Polynomial:
         return value
 
     # +, * 연산 구현
+    def __add__(self, other):
+        A, B = self.coeffs, other.coeffs
+        if len(A) < len(B):
+            A, B = B, A
+
+        return Polynomial(*[A[i] + B[i] if i < len(B) else A[i] for i in range(len(A))])
+
+    def mul(self, k):
+        return Polynomial(*[k * c for c in self.coeffs])
+
+    def __sub__(self, other):
+        return self + other.mul(-1)
+
+    def __mul__(self, other):
+        result = [0] * (self.degree + other.degree - 1)
+        for i in range(self.degree):
+            for j in range(other.degree):
+                result[i + j] += self.coeffs[i] * other.coeffs[j]
+
+        return Polynomial(*result)
+
     # 해 구하기
 
 
@@ -225,5 +254,9 @@ if __name__ == "__main__":
     # w3 = Matrix([[4, -12], [3, -16]])
     # print(*V.gram_schmidt(w1, w2, w3), sep='\n')
     f1 = Polynomial(1, 2, 1)
+    f2 = Polynomial(1, 2, 3, 4)
     print(f1)
+    print(f2)
     print(f1(3))
+    print(f2 - f1)
+    print(f1 * f2)
