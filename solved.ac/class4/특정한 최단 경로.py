@@ -1,7 +1,7 @@
 import heapq
 
 
-def dijkstra(start, end):
+def dijkstra(start):
     d = [INF for _ in range(N + 1)]
     d[start] = 0
     heap = [(0, start)]
@@ -15,10 +15,10 @@ def dijkstra(start, end):
                 d[node] = next_distance
                 heapq.heappush(heap, (next_distance, node))
 
-    return d[end]
+    return d
 
 
-INF = 1000 * 1000
+INF = 987654321
 N, E = map(int, input().split())
 data = [[] for _ in range(N + 1)]
 for _ in range(E):
@@ -27,11 +27,14 @@ for _ in range(E):
     data[b].append([a, c])
 
 v1, v2 = map(int, input().split())
-const = dijkstra(v1, v2)
-case1 = dijkstra(1, v1) + dijkstra(v2, N)
-case2 = dijkstra(1, v2) + dijkstra(v1, N)
+s1 = dijkstra(1)
+sv1 = dijkstra(v1)
+const = sv1[v2]
+case1 = s1[v1] + dijkstra(v2)[N]
+case2 = s1[v2] + sv1[N]
 
-if (case1 == INF and case2 == INF) or const == INF:
+print(const, case1, case2)
+if (case1 >= INF and case2 >= INF) or const == INF:
     print(-1)
 else:
     print(min(case1, case2) + const)
