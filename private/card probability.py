@@ -20,10 +20,10 @@ def ban_check(hand):
     return True
 
 
-cards = 42  # int(input("Total cards: "))
+cards = 40  # int(input("Total cards: "))
 hands = 5  # int(input("Start hands: "))
-requirements = [3, 3, 1]
-re_combs = [(1, 2), (1, 3), (2, 3)]
+requirements = [1, 1, 1, 1, 1]
+re_combs = [(1, 2, 3, 4, 5)]
 
 banned = [1, 1, 1]
 pool = []
@@ -45,4 +45,5 @@ for case in combinations(pool, hands):
     if check(case) and ban_check(case):
         ans += 1
 
+print(total)
 print(f"{ans / total * 100:.3F}%")
