@@ -19,6 +19,31 @@ class Matrix:
 
         return result
 
+    def is_square(self):
+        return self.rows == self.columns
+
+    def RREF(self):
+        ef = Matrix(self.matrix)
+        for j in range(self.rows):
+            print(ef)
+            for i in range(j, self.columns):
+                if ef.matrix[i][j]:
+                    ef.change_row(i, j)
+                    for l in range(j + 1, self.columns):
+                        ef.matrix[j][l] /= ef.matrix[j][j]
+                    ef.matrix[j][j] = 1
+
+                    for k in range(self.rows):
+                        if k == j:
+                            continue
+                        for l in range(j + 1, self.columns):
+                            print(ef.matrix[k][j], ef.matrix[j][j], ef.matrix[j][l])
+                            ef.matrix[k][l] -= ef.matrix[k][j] / ef.matrix[j][j] * ef.matrix[j][l]
+                        ef.matrix[k][j] = 0
+                    break
+
+        return ef
+
     def conjugate(self):
         result = Matrix(self.copy())
         for i in range(self.rows):
@@ -253,10 +278,12 @@ if __name__ == "__main__":
     # w2 = Matrix([[11, 4], [2, 5]])
     # w3 = Matrix([[4, -12], [3, -16]])
     # print(*V.gram_schmidt(w1, w2, w3), sep='\n')
-    f1 = Polynomial(1, 2, 1)
-    f2 = Polynomial(1, 2, 3, 4)
-    print(f1)
-    print(f2)
-    print(f1(3))
-    print(f2 - f1)
-    print(f1 * f2)
+    # f1 = Polynomial(1, 2, 1)
+    # f2 = Polynomial(1, 2, 3, 4)
+    # print(f1)
+    # print(f2)
+    # print(f1(3))
+    # print(f2 - f1)
+    # print(f1 * f2)
+    A = Matrix([[1, 2, 3], [1, 2, 3], [5, 4, 3]])
+    print(A.RREF())
