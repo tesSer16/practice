@@ -28,7 +28,7 @@ def bfs(case):
                 elif visit[nr][nc] != case:
                     return d
 
-    return 10000
+    return 1000
 
 
 N = int(input())
