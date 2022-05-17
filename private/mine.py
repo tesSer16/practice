@@ -1,4 +1,5 @@
 import os
+import time
 
 
 def cal_num(x, y):
@@ -16,7 +17,7 @@ def console_print():
     for i in range(SIZE):
         for j in range(SIZE):
             if not checked[i][j]:
-                print('■', end=" ")
+                print('?', end=" ")
             else:
                 print(board[i][j] if board[i][j] >= 0 else "※", end=" ")
         print()
@@ -30,7 +31,7 @@ def blank_check(x, y):
             if not board[nx][ny]:
                 blank_check(nx, ny)
             else:
-                board[nx][ny] = 1
+                checked[nx][ny] = 1
 
 
 def explode():
@@ -42,7 +43,8 @@ def clear():
     for x, y in mines:
         checked[x][y] = 1
     console_print()
-    input("CLEAR!!!")
+    end = time.time()
+    input("CLEAR!!! %.3f" % (end - start))
 
 
 if __name__ == "__main__":
@@ -57,6 +59,7 @@ if __name__ == "__main__":
 
     checked = [[0] * SIZE for _ in range(SIZE)]
     cnt, goal = 0, SIZE * SIZE - len(mines)
+    start = time.time()
     while True:
         console_print()
         r, c = -1, -1
@@ -72,6 +75,7 @@ if __name__ == "__main__":
             blank_check(r, c)
             continue
         elif board[r][c] == -1:
+            checked[r][c] = 1
             explode()
             break
         elif cnt == goal:
