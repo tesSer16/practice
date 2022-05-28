@@ -1,7 +1,7 @@
 def find(x):
-    while x != root[x]:
-        x = root[x]
-    return x
+    if x != root[x]:
+        root[x] = find(x)
+    return root[x]
 
 
 def union(x, y):
