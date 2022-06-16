@@ -2,12 +2,17 @@ def dfs(d, c, k):
     if dp[c][k] < INF:
         return dp[c][k]
     if d == n - 1:
-        return m[c][0] if m[c][0] else INF
+        return m[c][0] if m[c][0] else -1
 
+    values = []
     for i in range(n):
         nk = k | 1 << i
         if k != nk and m[c][i]:
-            dp[c][k] = min(dp[c][k], dfs(d + 1, i, nk) + m[c][i])
+            val = dfs(d + 1, i, nk)
+            if val > 0:
+                values.append(val + m[c][i])
+
+    dp[c][k] = min(values) if values else -1
 
     return dp[c][k]
 
